@@ -3,8 +3,28 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     background: #181818;
     min-height: 100vh;
-    padding-top: 80px; /* 为固定顶栏预留空间 */
+    padding-top: 152px; /* 为固定顶栏和方格条预留空间（顶栏72px + 方格条80px） */
+    position: relative;
 }
+
+/* 背景视频容器 */
+.background-video-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.background-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.3; /* 调整透明度 */
+}
+
 .navbar {
     background: rgba(24, 24, 24, 0.8);
     padding: 20px 0;
@@ -138,6 +158,7 @@ body {
     padding: 24px 32px;
     text-align: center;
     font-size: 18px;
+    margin-top: 80px; /* 增加顶部边距，为race-info-bar留出空间 */
     display: none;
 }
 .champion-info h2 {
@@ -281,7 +302,7 @@ body {
     .sidebar { display: none; }
 }
 
-/* 方格条 - 初始在中央靠上 */
+/* 方格条 - 固定在顶栏底部 */
 .checkered-bar {
     background: repeating-linear-gradient(0deg, #fff 0 20px, #111 20px 40px),
                 repeating-linear-gradient(90deg, #fff 0 20px, #111 20px 40px);
@@ -289,19 +310,17 @@ body {
     background-size: 40px 40px;
     padding: 30px 0;
     width: 100%;
-    /* 初始位置 */
-    position: relative;
-    z-index: 5; /* 图层在赛车图片底部 */
-    margin-top: 100px; /* 初始距离顶部的距离 */
-    transition: all 0.3s ease; /* 平滑过渡效果 */
-}
-
-/* 方格条吸顶样式 */
-.checkered-bar.sticky {
+    /* 固定位置 */
     position: fixed;
     top: 72px; /* 顶栏高度 */
     left: 0;
-    margin-top: 0;
+    z-index: 5; /* 图层在赛车图片底部 */
+    margin-top: 0; /* 不需要额外的margin */
+}
+
+/* 移除方格条吸顶样式 */
+.checkered-bar.sticky {
+    /* 移除这些样式 */
 }
 
 /* 像素风赛车展示区样式 */
@@ -309,22 +328,28 @@ body {
     display: flex;
     justify-content: center;
     gap: 40px;
-    margin: 40px auto 60px; /* 恢复正常边距 */
+    margin: 40px auto 60px; /* 正常边距 */
+    padding-top: 20px; /* 添加顶部内边距，减轻跳动感 */
     max-width: 1200px;
     position: relative;
     z-index: 10; /* 确保在方格条上方 */
     flex-wrap: wrap; /* 允许在较小屏幕上换行 */
+    overflow: hidden;
 }
 
+/* 赛车容器相关样式 */
 .pixel-car {
     display: flex;
     flex-direction: column;
     align-items: center;
     flex-basis: calc(50% - 40px); /* 每个车占据容器的一半宽度减去间距 */
     max-width: 400px; /* 限制最大宽度 */
+    position: relative; /* 为速度线条提供定位参考 */
+    perspective: 1000px; /* 为3D效果提供透视 */
+    z-index: 2; /* 确保赛车在视频上层显示 */
 }
 
-/* 赛车通用样式 */
+/* 赛车图片共同样式 */
 .pixel-car img {
     max-width: 360px;
     height: auto;
@@ -332,23 +357,89 @@ body {
     box-shadow: none;
     transition: transform 0.3s ease;
     will-change: transform;
+    position: relative; /* 为抖动动画提供定位基础 */
+    z-index: 2; /* 确保赛车在速度线条之上 */
+    transform-style: preserve-3d; /* 保持3D变换 */
 }
 
 /* 法拉利图片特定样式 */
 .pixel-car img.ferrari {
-    /* 只定义基础样式，让JavaScript控制视差效果 */
     transition: transform 0.3s ease;
-}
-
-/* 左侧法拉利 */
-.pixel-car img.ferrari-left {
-    /* 基础样式继承自.ferrari */
+    animation: carMovement 3s infinite ease-in-out, carShake 0.2s infinite ease-in-out;
 }
 
 /* 迈凯轮图片特定样式 */
 .pixel-car img.mclaren {
     transition: transform 0.3s ease;
-    transform: rotate(180deg);
+    animation: carMovementReverse 3s infinite ease-in-out, carShake 0.15s infinite ease-in-out;
+}
+
+/* 赛车抖动和转向动画 */
+@keyframes carMovement {
+    0% { transform: rotate3d(0, 1, 0, -2deg); }
+    25% { transform: rotate3d(0, 1, 0, 2deg); }
+    50% { transform: rotate3d(0, 1, 0, -1deg); }
+    75% { transform: rotate3d(0, 1, 0, 1deg); }
+    100% { transform: rotate3d(0, 1, 0, -2deg); }
+}
+
+/* 迈凯轮动画，与HTML中直接设置的rotate(180deg)共存 */
+@keyframes carMovementReverse {
+    0% { transform: rotate3d(0, 1, 0, -2deg); }
+    25% { transform: rotate3d(0, 1, 0, 2deg); }
+    50% { transform: rotate3d(0, 1, 0, -1deg); }
+    75% { transform: rotate3d(0, 1, 0, 1deg); }
+    100% { transform: rotate3d(0, 1, 0, -2deg); }
+}
+
+@keyframes carShake {
+    0% { margin-left: 0; }
+    25% { margin-left: -1px; }
+    50% { margin-left: 0; }
+    75% { margin-left: 1px; }
+    100% { margin-left: 0; }
+}
+
+/* 速度线条 */
+.speed-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    pointer-events: none; /* 使速度线不阻挡鼠标事件 */
+}
+
+.speed-line {
+    position: absolute;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.6);
+    height: 40px;
+    animation: speedLineAnimation 0.8s linear infinite;
+}
+
+/* 速度线条动画 */
+@keyframes speedLineAnimation {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(200%);
+        opacity: 0;
+    }
+}
+
+/* 左侧法拉利 */
+.pixel-car img.ferrari-left {
+    /* 基础样式继承自.ferrari */
 }
 
 /* 下移效果 - 用于右侧图片 */
@@ -456,15 +547,27 @@ body {
 /* 全屏F1 logo和文本区域 */
 .fullscreen-section {
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0; /* 移除上下边距 */
+    margin: 0;
     position: relative;
     overflow: hidden;
-    z-index: 20; /* 提高z-index，确保覆盖方格条 */
+    z-index: 10;
+    padding: 50px 0;
+}
+
+/* 全屏内容容器 */
+.fullscreen-content {
+    width: 85%;
+    max-width: 1600px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    z-index: 20;
+    position: relative;
 }
 
 .fullscreen-section:before {
@@ -552,4 +655,836 @@ body {
     .logo-text {
         font-size: 3rem;
     }
-} 
+}
+
+/* 下一场比赛信息样式 */
+.next-race-container {
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #e53935;
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    color: #fff;
+    max-width: 700px;
+    width: 80%;
+    box-shadow: 0 0 30px rgba(229, 57, 53, 0.2);
+    animation: glow 3s infinite alternate;
+    z-index: 10;
+}
+
+.next-race-title {
+    font-size: 1.8rem;
+    color: #e53935;
+    margin-bottom: 20px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.next-race-name {
+    font-size: 3rem;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(229, 57, 53, 0.8);
+}
+
+.next-race-circuit {
+    font-size: 1.6rem;
+    color: #ccc;
+    margin-bottom: 10px;
+}
+
+.next-race-date {
+    font-size: 1.4rem;
+    color: #e53935;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* 第二视图区域样式 */
+.second-view {
+    padding: 0 50px;
+    background-color: #181818;
+    position: relative;
+}
+
+/* 比赛信息组件 - 调整为全屏区域内 */
+.race-info-bar {
+    width: 100%;
+    margin: 0 auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    position: relative;
+    z-index: 50;
+    margin-bottom: 20px;
+    border: 1px solid #e53935;
+    border-radius: 6px;
+    background: rgba(20, 20, 20, 0.95);
+}
+
+/* 比赛信息内容 - 竖向布局 */
+.race-info-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 比赛标题区域 */
+.race-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(229, 57, 53, 0.3);
+}
+
+.race-name {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0;
+}
+
+.race-details {
+    color: #ccc;
+    font-size: 1rem;
+    text-align: right;
+}
+
+.race-circuit {
+    margin-right: 15px;
+    position: relative;
+}
+
+.race-circuit::after {
+    content: '•';
+    position: absolute;
+    right: -10px;
+    color: #e53935;
+}
+
+.race-date {
+    color: #e57373;
+}
+
+/* 比赛时间表 */
+.race-schedule {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.schedule-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 15px;
+    background: rgba(40, 40, 40, 0.5);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.schedule-item:hover {
+    background: rgba(60, 60, 60, 0.5);
+    transform: translateX(5px);
+}
+
+.schedule-item.highlight {
+    background: rgba(229, 57, 53, 0.15);
+    border-left: 3px solid #e53935;
+}
+
+/* 调整session-content的内部间距 */
+.session-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.session-name {
+    font-weight: 600;
+    color: #fff;
+    min-width: 80px;
+}
+
+.session-time {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    color: #ccc;
+    min-width: 200px;
+}
+
+.date {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin-bottom: 2px;
+}
+
+.time {
+    font-size: 0.95rem;
+    color: #fff;
+}
+
+.local-time {
+    color: #e57373;
+    position: relative;
+    padding-right: 15px;
+}
+
+.local-time::after {
+    content: "🕒";
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.user-time {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    display: block;
+    margin-top: 2px;
+    color: #8bc34a;
+}
+
+/* 正赛倒计时 */
+.countdown {
+    margin: 0 auto;
+    font-size: 0.9rem;
+    color: #e57373;
+    background: rgba(229, 57, 53, 0.1);
+    padding: 5px 15px;
+    border-radius: 4px;
+    text-align: center;
+    width: 60%;
+    transition: all 0.3s ease;
+}
+
+.countdown span {
+    font-weight: 700;
+    margin: 0 3px;
+    display: inline-block;
+    min-width: 1.5em;
+    text-align: center;
+}
+
+/* 响应式调整 */
+@media (max-width: 992px) {
+    .countdown {
+        width: 80%;
+    }
+}
+
+/* 底部信息 */
+.race-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(229, 57, 53, 0.3);
+}
+
+.timezone-info {
+    color: #999;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+.race-action {
+    margin-left: auto;
+}
+
+.race-details-btn {
+    display: inline-block;
+    background: #e53935;
+    color: #fff;
+    padding: 6px 15px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.race-details-btn:hover {
+    background: #ff5252;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .schedule-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .session-time {
+        align-items: flex-start;
+    }
+    
+    .countdown {
+        margin-left: 0;
+        margin-top: 10px;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* 车手积分榜样式 - 调整为全屏区域内 */
+.standings-section {
+    width: 100%;
+    margin: 0 auto;
+    background: rgba(20, 20, 20, 0.7);
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.season-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+.standings-nav {
+    display: flex;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #333;
+    justify-content: center;
+}
+
+.nav-item {
+    padding: 10px 30px;
+    color: #888;
+    font-size: 1.2rem;
+    cursor: pointer;
+    position: relative;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.nav-item.active {
+    color: #fff;
+}
+
+.nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #e53935;
+}
+
+/* 车手积分卡片 */
+.standings-cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 50px;
+    flex-wrap: wrap;
+    padding: 0 20px;
+}
+
+.driver-card {
+    width: 300px;
+    height: 400px;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    color: #fff;
+}
+
+.driver-card.first {
+    background: linear-gradient(to bottom, #f39c12, #e67e22);
+    transform: scale(1.05);
+    z-index: 2;
+}
+
+.driver-card.second {
+    background: linear-gradient(to bottom, #f39c12, #e67e22);
+}
+
+.driver-card.third {
+    background: linear-gradient(to bottom, #3498db, #2980b9);
+}
+
+.rank {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 3rem;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.rank sup {
+    font-size: 1rem;
+    vertical-align: super;
+}
+
+.driver-name {
+    position: absolute;
+    top: 80px;
+    left: 20px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.team-name {
+    position: absolute;
+    top: 110px;
+    left: 20px;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.flag {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    height: 20px;
+    background-size: cover;
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.uk-flag {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAwIDYwMCI+PHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjMDAyNDdkIi8+PHBhdGggZD0iTTAgMGwxMjAwIDYwMG0wLTYwMEwwIDYwMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEyMCIvPjxwYXRoIGQ9Ik0wIDBoMTIwMHY2MDBIMHoiIHN0cm9rZT0iI2NmMTQyYiIgc3Ryb2tlLXdpZHRoPSI4MCIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik02MDAgMHY2MDBNMCAzMDBoMTIwMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIwMCIvPjxwYXRoIGQ9Ik02MDAgMHY2MDBNMCAzMDBoMTIwMCIgc3Ryb2tlPSIjY2YxNDJiIiBzdHJva2Utd2lkdGg9IjEyMCIvPjwvc3ZnPg==');
+}
+
+.aus-flag {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjgwIDY0MCI+PHJlY3Qgd2lkdGg9IjEyODAiIGhlaWdodD0iNjQwIiBmaWxsPSIjMDAyQjdGIi8+PHBhdGggZD0iTTAgMGw2NDAgMzIwTDAgNjQwVjB6IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTYwIDYwaDE2MHYxMjBINjBWNjB6IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTYwIDYwdjUzLjNMNjAgMTgwaDE2MFY2MEg2MHptNjAgNjBsLTQwLTQwaDgwbC00MCA0MHptLTYwIDB2LTQwaDQwbC00MCA0MHptMTIwIDB2LTQwbC00MCA0MGg0MHptLTEyMCAwbDQwIDQwdjQwaC00MHYtODB6bTEyMCAwbC00MCA0MHY0MGg0MHYtODB6IiBmaWxsPSIjZmYwMDAwIi8+PHBhdGggZD0iTTY0MCAzMjBsLTExLjMgMjIuMyAtMjkuNy03LjEgMTEuMyAyMi4zIC0yMy42IDE1LjkgMjMuMyAxMC42IC00IDI2IDIyLTExLjIgMTIgMjEuMiAxMi0yMS4yIDIyIDExLjItNCAyNiAyMy4zLTEwLjYgLTIzLjYtMTUuOSAxMS4zLTIyLjMgLTI5LjcgNy4xIC0xMS4zLTIyLjN6IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTYwIDYwaDgwdjYwSDYwVjYweiIgZmlsbD0iI2ZmMDAwMCIvPjxwYXRoIGQ9Ik0xNDAgNjB2NjBoODBWNjBoLTgwek02MCA2MGg4MHY2MEg2MFY2MHoiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNjAgNjB2NjBoODBWNjBINjB6IiBmaWxsPSIjMDAyQjdGIi8+PHBhdGggZD0iTTYwIDYwdjMwaDgwVjYwSDYwek0xMDAgNjB2NjBoNDBWNjBoLTQweiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik02MCA2MHY2aDgwdi02SDYwek02MCA2NnY2aDgwdi02SDYwek02MCA3MnY2aDgwdi02SDYwek02MCA3OHY2aDgwdi02SDYwek02MCA4NHY2aDgwdi02SDYwek02MCA5MHY2aDgwdi02SDYwek02MCA5NnY2aDgwdi02SDYwek02MCAxMDJ2Nmg4MHYtNkg2MHpNNjAgMTA4djZoODB2LTZINjB6IiBmaWxsPSIjZmYwMDAwIi8+PHBhdGggZD0iTTk0IDYwdjYwaDEyVjYwSDk0eiIgZmlsbD0iI2ZmMDAwMCIvPjxwYXRoIGQ9Ik05NiA2MHY2MGg4VjYwSDk2ek0xMDQgNjB2NjBoOFY2MGgtOHoiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNOTIwIDgwbC0xMC42IDMyLjdoLTM0LjNsMjcuNyAyMC4yLTEwLjYgMzIuNyAyNy44LTIwLjIgMjcuNyAyMC4yLTEwLjYtMzIuNyAyNy43LTIwLjJoLTM0LjNsLTEwLjYtMzIuN3pNMjgwIDE2MGwtMTAuNiAzMi43aC0zNC4zbDI3LjcgMjAuMi0xMC42IDMyLjcgMjcuOC0yMC4yIDI3LjcgMjAuMi0xMC42LTMyLjcgMjcuNy0yMC4yaC0zNC4zbC0xMC42LTMyLjd6TTI4MCA0ODBsLTEwLjYgMzIuN2gtMzQuM2wyNy43IDIwLjItMTAuNiAzMi43IDI3LjgtMjAuMiAyNy43IDIwLjItMTAuNi0zMi43IDI3LjctMjAuMmgtMzQuM2wtMTAuNi0zMi43ek05MjAgNDgwbC0xMC42IDMyLjdoLTM0LjNsMjcuNyAyMC4yLTEwLjYgMzIuNyAyNy44LTIwLjIgMjcuNyAyMC4yLTEwLjYtMzIuNyAyNy43LTIwLjJoLTM0LjNsLTEwLjYtMzIuN3pNNjAwIDQwbC01LjMgMTYuM2gtMTcuMmwxMy45IDEwLjEtNS4zIDE2LjMgMTMuOS0xMC4xIDEzLjkgMTAuMS01LjMtMTYuMyAxMy45LTEwLjFoLTE3LjJsLTUuMy0xNi4zeiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==');
+}
+
+.nl-flag {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNjAwIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2ZmZiIvPjxyZWN0IHdpZHRoPSI5MDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjMjE0NjhiIi8+PHJlY3QgeT0iNDAwIiB3aWR0aD0iOTAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2FlMWMyOCIvPjwvc3ZnPg==');
+}
+
+/* 添加其他车手可能需要的国旗 */
+.de-flag {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNjAwIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2ZmY2UwMCIvPjxyZWN0IHdpZHRoPSI5MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjZmYwMDAwIi8+PHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwMDAwMDAiLz48L3N2Zz4=');
+}
+
+.fi-flag {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNjAwIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2ZmZiIvPjxyZWN0IHg9IjI1MCIgd2lkdGg9IjE1MCIgaGVpZ2h0PSI2MDAiIGZpbGw9IiMwMDI2OGMiLz48cmVjdCB5PSIyMjUiIHdpZHRoPSI5MDAiIGhlaWdodD0iMTUwIiBmaWxsPSIjMDAyNjhjIi8+PC9zdmc+');
+}
+
+.es-flag {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3NTAgNTAwIj48cmVjdCB3aWR0aD0iNzUwIiBoZWlnaHQ9IjUwMCIgZmlsbD0iI2ZmYzQwMCIvPjxyZWN0IHk9IjEyNSIgd2lkdGg9Ijc1MCIgaGVpZ2h0PSIyNTAiIGZpbGw9IiNjNjA5MTUiLz48L3N2Zz4=');
+}
+
+.fr-flag {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNjAwIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2VkMjkzOSIvPjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjZmZmIi8+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI2MDAiIGZpbGw9IiMwMDIzOTUiLz48L3N2Zz4=');
+}
+
+.br-flag {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgNTA0Ij48cmVjdCB3aWR0aD0iNzIwIiBoZWlnaHQ9IjUwNCIgZmlsbD0iIzAwOTkzOSIvPjxwYXRoIGQ9Ik0zNjAgMjUyTDcyMCA1MDRIMGw3MjAtNTA0eiIgZmlsbD0iI2ZlZGYwMCIvPjxjaXJjbGUgY3g9IjM2MCIgY3k9IjI1MiIgcj0iMTEwIiBmaWxsPSIjMDAyNzc2Ii8+PHBhdGggZD0iTTMxNSAzMTVhMTEwIDExMCAwIDAgMSA5MC0xNzUgMTEwIDExMCAwIDAgMSA5MCAxNzUiIGZpbGw9IiNmZmYiLz48L3N2Zz4=');
+}
+
+.mc-flag {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3NTAgNjAwIj48cmVjdCB3aWR0aD0iNzUwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2NlMTEyNiIvPjxyZWN0IHdpZHRoPSI3NTAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZmZmIi8+PC9zdmc+');
+}
+
+.driver-img {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 70%;
+    height: 70%;
+    overflow: hidden;
+    border-top-left-radius: 100px; /* 添加圆角，更好地融入卡片设计 */
+}
+
+.driver-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    transition: transform 0.3s ease; /* 添加过渡效果 */
+}
+
+/* 添加悬停效果 */
+.driver-card:hover .driver-img img {
+    transform: scale(1.05);
+}
+
+/* 调整第一名卡片的样式 */
+.driver-card.first .driver-img {
+    width: 75%;
+    height: 75%;
+}
+
+.points {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.points-label {
+    font-size: 1rem;
+    opacity: 0.7;
+    margin-left: 5px;
+}
+
+/* 积分榜表格样式 */
+.standings-table {
+    width: 100%;
+    background: rgba(30, 30, 30, 0.7);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    margin-top: 30px;
+}
+
+.standings-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.standings-table th {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+    color: #888;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.standings-table td {
+    padding: 15px;
+    border-bottom: 1px solid #222;
+    color: #fff;
+}
+
+.standings-table tr:last-child td {
+    border-bottom: none;
+}
+
+.standings-table .position {
+    width: 50px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.standings-table .points {
+    width: 80px;
+    text-align: right;
+    font-weight: bold;
+    position: static;
+    font-size: inherit;
+}
+
+.dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.mclaren-color {
+    background-color: #FF9800;
+}
+
+.redbull-color {
+    background-color: #1E3F88;
+}
+
+.ferrari-color {
+    background-color: #DC0000;
+}
+
+.mercedes-color {
+    background-color: #00A19C;
+}
+
+.flag-mini {
+    display: inline-block;
+    width: 20px;
+    height: 12px;
+    background-size: cover;
+    margin-right: 8px;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+/* 澳大利亚 */
+.flag-mini.aus {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjgwIDY0MCI+PHJlY3Qgd2lkdGg9IjEyODAiIGhlaWdodD0iNjQwIiBmaWxsPSIjMDAyQjdGIi8+PHBhdGggZD0iTTAgMGw2NDAgMzIwTDAgNjQwVjB6IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTYwIDYwaDE2MHYxMjBINjBWNjB6IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTYwIDYwdjUzLjNMNjAgMTgwaDE2MFY2MEg2MHptNjAgNjBsLTQwLTQwaDgwbC00MCA0MHptLTYwIDB2LTQwaDQwbC00MCA0MHptMTIwIDB2LTQwbC00MCA0MGg0MHptLTEyMCAwbDQwIDQwdjQwaC00MHYtODB6bTEyMCAwbC00MCA0MHY0MGg0MHYtODB6IiBmaWxsPSIjZmYwMDAwIi8+PHBhdGggZD0iTTY0MCAzMjBsLTExLjMgMjIuMyAtMjkuNy03LjEgMTEuMyAyMi4zIC0yMy42IDE1LjkgMjMuMyAxMC42IC00IDI2IDIyLTExLjIgMTIgMjEuMiAxMi0yMS4yIDIyIDExLjItNCAyNiAyMy4zLTEwLjYgLTIzLjYtMTUuOSAxMS4zLTIyLjMgLTI5LjcgNy4xIC0xMS4zLTIyLjN6IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTYwIDYwaDgwdjYwSDYwVjYweiIgZmlsbD0iI2ZmMDAwMCIvPjxwYXRoIGQ9Ik0xNDAgNjB2NjBoODBWNjBoLTgwek02MCA2MGg4MHY2MEg2MFY2MHoiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNjAgNjB2NjBoODBWNjBINjB6IiBmaWxsPSIjMDAyQjdGIi8+PHBhdGggZD0iTTYwIDYwdjMwaDgwVjYwSDYwek0xMDAgNjB2NjBoNDBWNjBoLTQweiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik02MCA2MHY2aDgwdi02SDYwek02MCA2NnY2aDgwdi02SDYwek02MCA3MnY2aDgwdi02SDYwek02MCA3OHY2aDgwdi02SDYwek02MCA4NHY2aDgwdi02SDYwek02MCA5MHY2aDgwdi02SDYwek02MCA5NnY2aDgwdi02SDYwek02MCAxMDJ2Nmg4MHYtNkg2MHpNNjAgMTA4djZoODB2LTZINjB6IiBmaWxsPSIjZmYwMDAwIi8+PHBhdGggZD0iTTk0IDYwdjYwaDEyVjYwSDk0eiIgZmlsbD0iI2ZmMDAwMCIvPjxwYXRoIGQ9Ik05NiA2MHY2MGg4VjYwSDk2ek0xMDQgNjB2NjBoOFY2MGgtOHoiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNOTIwIDgwbC0xMC42IDMyLjdoLTM0LjNsMjcuNyAyMC4yLTEwLjYgMzIuNyAyNy44LTIwLjIgMjcuNyAyMC4yLTEwLjYtMzIuNyAyNy43LTIwLjJoLTM0LjNsLTEwLjYtMzIuN3pNMjgwIDE2MGwtMTAuNiAzMi43aC0zNC4zbDI3LjcgMjAuMi0xMC42IDMyLjcgMjcuOC0yMC4yIDI3LjcgMjAuMi0xMC42LTMyLjcgMjcuNy0yMC4yaC0zNC4zbC0xMC42LTMyLjd6TTI4MCA0ODBsLTEwLjYgMzIuN2gtMzQuM2wyNy43IDIwLjItMTAuNiAzMi43IDI3LjgtMjAuMiAyNy43IDIwLjItMTAuNi0zMi43IDI3LjctMjAuMmgtMzQuM2wtMTAuNi0zMi43ek05MjAgNDgwbC0xMC42IDMyLjdoLTM0LjNsMjcuNyAyMC4yLTEwLjYgMzIuNyAyNy44LTIwLjIgMjcuNyAyMC4yLTEwLjYtMzIuNyAyNy43LTIwLjJoLTM0LjNsLTEwLjYtMzIuN3pNNjAwIDQwbC01LjMgMTYuM2gtMTcuMmwxMy45IDEwLjEtNS4zIDE2LjMgMTMuOS0xMC4xIDEzLjkgMTAuMS01LjMtMTYuMyAxMy45LTEwLjFoLTE3LjJsLTUuMy0xNi4zeiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==');
+}
+
+/* 英国 */
+.flag-mini.uk {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAwIDYwMCI+PHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjMDAyNDdkIi8+PHBhdGggZD0iTTAgMGwxMjAwIDYwMG0wLTYwMEwwIDYwMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEyMCIvPjxwYXRoIGQ9Ik0wIDBoMTIwMHY2MDBIMHoiIHN0cm9rZT0iI2NmMTQyYiIgc3Ryb2tlLXdpZHRoPSI4MCIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik02MDAgMHY2MDBNMCAzMDBoMTIwMCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIwMCIvPjxwYXRoIGQ9Ik02MDAgMHY2MDBNMCAzMDBoMTIwMCIgc3Ryb2tlPSIjY2YxNDJiIiBzdHJva2Utd2lkdGg9IjEyMCIvPjwvc3ZnPg==');
+}
+
+/* 荷兰 */
+.flag-mini.nl {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNjAwIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2ZmZiIvPjxyZWN0IHdpZHRoPSI5MDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjMjE0NjhiIi8+PHJlY3QgeT0iNDAwIiB3aWR0aD0iOTAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2FlMWMyOCIvPjwvc3ZnPg==');
+}
+
+/* 摩纳哥 */
+.flag-mini.mc {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3NTAgNjAwIj48cmVjdCB3aWR0aD0iNzUwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2NlMTEyNiIvPjxyZWN0IHdpZHRoPSI3NTAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZmZmIi8+PC9zdmc+');
+}
+
+/* 德国 */
+.flag-mini.de {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNjAwIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2ZmY2UwMCIvPjxyZWN0IHdpZHRoPSI5MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjZmZkZTAwIi8+PHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwMDAwMDAiLz48L3N2Zz4=');
+}
+
+/* 芬兰 */
+.flag-mini.fi {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNjAwIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2ZmZiIvPjxyZWN0IHg9IjI1MCIgd2lkdGg9IjE1MCIgaGVpZ2h0PSI2MDAiIGZpbGw9IiMwMDI2OGMiLz48cmVjdCB5PSIyMjUiIHdpZHRoPSI5MDAiIGhlaWdodD0iMTUwIiBmaWxsPSIjMDAyNjhjIi8+PC9zdmc+');
+}
+
+/* 西班牙 */
+.flag-mini.es {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3NTAgNTAwIj48cmVjdCB3aWR0aD0iNzUwIiBoZWlnaHQ9IjUwMCIgZmlsbD0iI2ZmYzQwMCIvPjxyZWN0IHk9IjEyNSIgd2lkdGg9Ijc1MCIgaGVpZ2h0PSIyNTAiIGZpbGw9IiNjNjA5MTUiLz48L3N2Zz4=');
+}
+
+/* 法国 */
+.flag-mini.fr {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNjAwIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2VkMjkzOSIvPjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjZmZmIi8+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI2MDAiIGZpbGw9IiMwMDIzOTUiLz48L3N2Zz4=');
+}
+
+/* 巴西 */
+.flag-mini.br {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgNTA0Ij48cmVjdCB3aWR0aD0iNzIwIiBoZWlnaHQ9IjUwNCIgZmlsbD0iIzAwOTkzOSIvPjxwYXRoIGQ9Ik0zNjAgMjUyTDcyMCA1MDRIMGw3MjAtNTA0eiIgZmlsbD0iI2ZlZGYwMCIvPjxjaXJjbGUgY3g9IjM2MCIgY3k9IjI1MiIgcj0iMTEwIiBmaWxsPSIjMDAyNzc2Ii8+PHBhdGggZD0iTTMxNSAzMTVhMTEwIDExMCAwIDAgMSA5MC0xNzUgMTEwIDExMCAwIDAgMSA5MCAxNzUiIGZpbGw9IiNmZmYiLz48L3N2Zz4=');
+}
+
+/* 加拿大 */
+.flag-mini.ca {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNjAwIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2ZmZiIvPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjZDgwNjIxIi8+PHJlY3QgeD0iNjAwIiB3aWR0aD0iMzAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2Q4MDYyMSIvPjxwYXRoIGQ9Ik00NTAgMTUwbC00MCAyMCAxOSA1LTI5IDU4IDU3LTM4IDktMTgtMTYgOSA0MC0yMC0xNS0xNSA2LTExLTE2IDgtMTUtMTZ6IiBmaWxsPSIjZDgwNjIxIi8+PC9zdmc+');
+}
+
+/* 奥地利 */
+.flag-mini.at {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNjAwIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2ZmZiIvPjxyZWN0IHdpZHRoPSI5MDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZWQyOTM5Ii8+PHJlY3QgeT0iNDAwIiB3aWR0aD0iOTAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2VkMjkzOSIvPjwvc3ZnPg==');
+}
+
+/* 墨西哥 */
+.flag-mini.mx {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNjAwIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2ZmZiIvPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjMDA2MzQ3Ii8+PHJlY3QgeD0iNjAwIiB3aWR0aD0iMzAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2NlMTEyNiIvPjxjaXJjbGUgY3g9IjQ1MCIgY3k9IjMwMCIgcj0iNjAiIGZpbGw9IiM5MjU0MmIiLz48L3N2Zz4=');
+}
+
+/* 丹麦 */
+.flag-mini.dk {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNjAwIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2M4MTAyZSIvPjxwYXRoIGQ9Ik0zNTAgMGgxMDB2NjAwSDM1MFYwek0wIDI1MGg5MDB2MTAwSDBWMjUweiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==');
+}
+
+/* 泰国 */
+.flag-mini.th {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNjAwIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2VkMjkzOSIvPjxyZWN0IHk9IjEwMCIgd2lkdGg9IjkwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiNmZmYiLz48cmVjdCB5PSIyMDAiIHdpZHRoPSI5MDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjMDAzMmE2Ii8+PC9zdmc+');
+}
+
+/* 中国 */
+.flag-mini.cn {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNjAwIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2RlMjkxMCIvPjxnIGZpbGw9IiNmZmRlMDAiPjxwYXRoIGQ9Ik0xNTAgMTAwbDE2IDQ5aDUxbC00MSAzMCAxNiA0OS00Mi0zMC00MSAzMCAxNS00OS00MS0zMGg1MnoiLz48cGF0aCBkPSJNMjUwIDEzMGw1IDE2aDE3bC0xNCAxMCA1IDE2LTE0LTEwLTEzIDEwIDUtMTYtMTQtMTBoMTd6Ii8+PHBhdGggZD0iTTI1MCAxOTBsNSAxNmgxN2wtMTQgMTAgNSAxNi0xNC0xMC0xMyAxMCA1LTE2LTE0LTEwaDE3eiIvPjxwYXRoIGQ9Ik0yMTAgMjMwbDUgMTZoMTdsLTE0IDEwIDUgMTYtMTQtMTAtMTMgMTAgNS0xNi0xNC0xMGgxN3oiLz48cGF0aCBkPSJNMTcwIDE5MGw1IDE2aDE3bC0xNCAxMCA1IDE2LTE0LTEwLTEzIDEwIDUtMTYtMTQtMTBoMTd6Ii8+PC9nPjwvc3ZnPg==');
+}
+
+/* 日本 */
+.flag-mini.jp {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNjAwIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjQ1MCIgY3k9IjMwMCIgcj0iMTgwIiBmaWxsPSIjYmMwMDJkIi8+PC9zdmc+');
+}
+
+.mclaren-icon, .redbull-icon, .ferrari-icon, .mercedes-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.mclaren-icon {
+    background-color: #FF9800;
+}
+
+.redbull-icon {
+    background-color: #1E3F88;
+}
+
+.ferrari-icon {
+    background-color: #DC0000;
+}
+
+.mercedes-icon {
+    background-color: #00A19C;
+}
+
+@media (max-width: 1024px) {
+    .standings-cards {
+        gap: 10px;
+    }
+    
+    .driver-card {
+        width: 260px;
+        height: 350px;
+    }
+    
+    .driver-card.first {
+        transform: scale(1.03);
+    }
+}
+
+@media (max-width: 768px) {
+    .standings-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .driver-card {
+        width: 90%;
+        max-width: 320px;
+    }
+    
+    .driver-card.first {
+        transform: none;
+        order: -1;
+    }
+    
+    .standings-table th, .standings-table td {
+        padding: 10px 8px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .fullscreen-content {
+        width: 95%;
+    }
+    
+    /* 比赛信息媒体查询 */
+    .race-info-content {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .fullscreen-section {
+        padding: 30px 0;
+    }
+    
+    .fullscreen-content {
+        gap: 20px;
+    }
+    
+    .race-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .race-name {
+        font-size: 1.5rem;
+    }
+    
+    .race-details {
+        text-align: left;
+    }
+    
+    .schedule-item {
+        padding: 10px;
+    }
+    
+    .session-time {
+        align-items: flex-start;
+        width: 100%;
+        min-width: unset;
+    }
+    
+    .local-time::after {
+        position: static;
+        margin-left: 5px;
+    }
+    
+    .countdown {
+        width: 100%;
+        margin-top: 2px;
+    }
+    
+    .race-footer {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .timezone-info {
+        margin-bottom: 5px;
+    }
+    
+    .race-action {
+        margin-left: 0;
+    }
+}
+
+/* 加载指示器和错误提示样式 */
+.loading-indicator {
+    display: inline-block;
+    color: #e53935;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    background: rgba(24, 24, 24, 0.8);
+    padding: 15px 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    animation: pulse 1.2s infinite;
+}
+
+.loading-indicator:after {
+    content: '';
+    display: inline-block;
+    width: 0;
+    animation: loadingDots 1.5s infinite;
+    overflow: hidden;
+}
+
+@keyframes loadingDots {
+    0% { width: 0; content: ''; }
+    33% { width: 0.5em; content: '.'; }
+    66% { width: 1em; content: '..'; }
+    100% { width: 1.5em; content: '...'; }
+}
+
+.error-toast {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    animation: fadeInUp 0.3s ease forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}

@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- 添加视频元素作为整站背景 -->
+    <div class="background-video-container">
+        <video class="background-video" autoplay loop muted>
+            <source src="video/F1fold.mp4" type="video/mp4">
+            您的浏览器不支持视频标签。
+        </video>
+    </div>
+    
     <nav class="navbar">
         <!-- 添加Logo和网站名称 -->
         <div class="brand-container">
@@ -27,7 +35,7 @@
         </ul>
     </nav>
     
-    <!-- 方格条移动到顶栏下方 -->
+    <!-- 方格条固定在顶栏下方 -->
     <div class="checkered-bar"></div>
     
     <!-- 添加F1赛车图片展示区域 -->
@@ -36,28 +44,238 @@
             <img src="images/法拉利.png" alt="像素风法拉利F1赛车" class="no-hover ferrari ferrari-left">
         </div>
         <div class="pixel-car">
-            <img src="images/迈凯轮.png" alt="像素风迈凯轮F1赛车" class="mclaren offset-down">
+            <img src="images/迈凯轮透明背景.jpg" alt="像素风迈凯轮F1赛车" class="mclaren offset-down">
         </div>
     </div>
     
-    <!-- 添加全屏F1 logo和文本区域 -->
+    <!-- 全屏区域 - 将比赛信息和积分榜整合到原logo和文字位置 -->
     <div class="fullscreen-section">
         <div class="racing-line left"></div>
         <div class="racing-line right"></div>
-        <div class="logo-container">
-            <img src="images/10001.svg" alt="F1 Logo" class="f1-logo">
-            <div class="logo-text">F1 BABY</div>
+        
+        <!-- 全屏内容容器 -->
+        <div class="fullscreen-content">
+            <!-- 比赛信息组件 -->
+            <div class="race-info-bar">
+                <div class="race-info-content">
+                    <div class="race-header">
+                        <div class="race-name">日本大奖赛</div>
+                        <div class="race-details">
+                            <span class="race-circuit">铃鹿赛道</span>
+                            <span class="race-date">2024年9月22日</span>
+                        </div>
+                    </div>
+                    
+                    <div class="race-schedule">
+                        <div class="schedule-item">
+                            <div class="session-content">
+                                <div class="session-name">练习赛 1</div>
+                                <div class="session-time">
+                                    <span class="date">9月20日 周五</span>
+                                    <span class="time local-time">上午 11:30-12:30</span>
+                                    <span class="user-time" id="fp1-user-time">计算中...</span>
+                                </div>
+                            </div>
+                            <div class="countdown" id="fp1-countdown">
+                                <span id="fp1-days">--</span>天
+                                <span id="fp1-hours">--</span>时
+                                <span id="fp1-minutes">--</span>分
+                                <span id="fp1-seconds">--</span>秒
+                            </div>
+                        </div>
+                        <div class="schedule-item">
+                            <div class="session-content">
+                                <div class="session-name">练习赛 2</div>
+                                <div class="session-time">
+                                    <span class="date">9月20日 周五</span>
+                                    <span class="time local-time">下午 15:00-16:00</span>
+                                    <span class="user-time" id="fp2-user-time">计算中...</span>
+                                </div>
+                            </div>
+                            <div class="countdown" id="fp2-countdown">
+                                <span id="fp2-days">--</span>天
+                                <span id="fp2-hours">--</span>时
+                                <span id="fp2-minutes">--</span>分
+                                <span id="fp2-seconds">--</span>秒
+                            </div>
+                        </div>
+                        <div class="schedule-item">
+                            <div class="session-content">
+                                <div class="session-name">练习赛 3</div>
+                                <div class="session-time">
+                                    <span class="date">9月21日 周六</span>
+                                    <span class="time local-time">上午 10:30-11:30</span>
+                                    <span class="user-time" id="fp3-user-time">计算中...</span>
+                                </div>
+                            </div>
+                            <div class="countdown" id="fp3-countdown">
+                                <span id="fp3-days">--</span>天
+                                <span id="fp3-hours">--</span>时
+                                <span id="fp3-minutes">--</span>分
+                                <span id="fp3-seconds">--</span>秒
+                            </div>
+                        </div>
+                        <div class="schedule-item highlight">
+                            <div class="session-content">
+                                <div class="session-name">排位赛</div>
+                                <div class="session-time">
+                                    <span class="date">9月21日 周六</span>
+                                    <span class="time local-time">下午 14:00-15:00</span>
+                                    <span class="user-time" id="quali-user-time">计算中...</span>
+                                </div>
+                            </div>
+                            <div class="countdown" id="quali-countdown">
+                                <span id="quali-days">--</span>天
+                                <span id="quali-hours">--</span>时
+                                <span id="quali-minutes">--</span>分
+                                <span id="quali-seconds">--</span>秒
+                            </div>
+                        </div>
+                        <div class="schedule-item highlight">
+                            <div class="session-content">
+                                <div class="session-name">正赛</div>
+                                <div class="session-time">
+                                    <span class="date">9月22日 周日</span>
+                                    <span class="time local-time">上午 06:00</span>
+                                    <span class="user-time" id="race-user-time">计算中...</span>
+                                </div>
+                            </div>
+                            <div class="countdown" id="race-countdown">
+                                <span id="race-days">--</span>天
+                                <span id="race-hours">--</span>时
+                                <span id="race-minutes">--</span>分
+                                <span id="race-seconds">--</span>秒
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="race-footer">
+                        <div class="timezone-info">
+                            <span>当地时间 (UTC+9)</span>
+                        </div>
+                        <div class="race-action">
+                            <a href="#" class="race-details-btn">完整赛程</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 车手积分榜 -->
+            <div class="standings-section">
+                <h2 class="season-title">2025 赛季</h2>
+                
+                <div class="standings-nav">
+                    <div class="nav-item active">司机</div>
+                    <div class="nav-item">团队</div>
+                </div>
+                
+                <div class="driver-standings">
+                    <!-- 积分榜卡片容器 -->
+                    <div class="standings-cards">
+                        <!-- 第二名 -->
+                        <div class="driver-card second">
+                            <div class="rank">2<sup>ND</sup></div>
+                            <div class="driver-name">兰多·诺里斯</div>
+                            <div class="team-name">迈凯伦</div>
+                            <div class="flag uk-flag"></div>
+                            <div class="driver-img">
+                                <img src="images/drivers/诺里斯.webp" alt="兰多·诺里斯">
+                            </div>
+                            <div class="points">226<span class="points-label">PTS</span></div>
+                        </div>
+                        
+                        <!-- 第一名 -->
+                        <div class="driver-card first">
+                            <div class="rank">1<sup>ST</sup></div>
+                            <div class="driver-name">奥斯卡·皮亚斯特里</div>
+                            <div class="team-name">迈凯伦</div>
+                            <div class="flag aus-flag"></div>
+                            <div class="driver-img">
+                                <img src="images/drivers/皮亚斯特里.webp" alt="奥斯卡·皮亚斯特里">
+                            </div>
+                            <div class="points">234<span class="points-label">PTS</span></div>
+                        </div>
+                        
+                        <!-- 第三名 -->
+                        <div class="driver-card third">
+                            <div class="rank">3<sup>RD</sup></div>
+                            <div class="driver-name">马克斯·维斯塔潘</div>
+                            <div class="team-name">红牛车队</div>
+                            <div class="flag nl-flag"></div>
+                            <div class="driver-img">
+                                <img src="images/drivers/维斯塔潘.webp" alt="马克斯·维斯塔潘">
+                            </div>
+                            <div class="points">165<span class="points-label">PTS</span></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 积分榜表格 -->
+                    <div class="standings-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="position">位置</th>
+                                    <th class="driver">司机</th>
+                                    <th class="nationality">国籍</th>
+                                    <th class="team">团队</th>
+                                    <th class="points">点数</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="position">1</td>
+                                    <td class="driver"><span class="mclaren-color dot"></span> 奥斯卡·皮亚斯特里</td>
+                                    <td class="nationality"><span class="flag-mini aus"></span> 澳大利亚</td>
+                                    <td class="team"><span class="mclaren-icon"></span> 迈凯伦</td>
+                                    <td class="points">234</td>
+                                </tr>
+                                <tr>
+                                    <td class="position">2</td>
+                                    <td class="driver"><span class="mclaren-color dot"></span> 兰多·诺里斯</td>
+                                    <td class="nationality"><span class="flag-mini uk"></span> 英国</td>
+                                    <td class="team"><span class="mclaren-icon"></span> 迈凯伦</td>
+                                    <td class="points">226</td>
+                                </tr>
+                                <tr>
+                                    <td class="position">3</td>
+                                    <td class="driver"><span class="redbull-color dot"></span> 马克斯·维斯塔潘</td>
+                                    <td class="nationality"><span class="flag-mini nl"></span> 荷兰</td>
+                                    <td class="team"><span class="redbull-icon"></span> 红牛车队</td>
+                                    <td class="points">165</td>
+                                </tr>
+                                <tr>
+                                    <td class="position">4</td>
+                                    <td class="driver"><span class="ferrari-color dot"></span> 查尔斯·勒克莱尔</td>
+                                    <td class="nationality"><span class="flag-mini mc"></span> 摩纳哥</td>
+                                    <td class="team"><span class="ferrari-icon"></span> 法拉利</td>
+                                    <td class="points">157</td>
+                                </tr>
+                                <tr>
+                                    <td class="position">5</td>
+                                    <td class="driver"><span class="mercedes-color dot"></span> 刘易斯·汉密尔顿</td>
+                                    <td class="nationality"><span class="flag-mini uk"></span> 英国</td>
+                                    <td class="team"><span class="mercedes-icon"></span> 梅赛德斯</td>
+                                    <td class="points">143</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
-    <div class="champion-info" id="championInfo">
-        <h2 id="championYear"></h2>
-        <table>
-            <tr><th>车手</th><td id="championDriver"></td></tr>
-            <tr><th>国籍</th><td id="championNation"></td></tr>
-            <tr><th>车队</th><td id="championTeam"></td></tr>
-        </table>
-    </div>
+    <!-- 第二视图区域开始 -->
+    <div class="second-view">
+        <div class="champion-info" id="championInfo">
+            <h2 id="championYear"></h2>
+            <table>
+                <tr><th>车手</th><td id="championDriver"></td></tr>
+                <tr><th>国籍</th><td id="championNation"></td></tr>
+                <tr><th>车队</th><td id="championTeam"></td></tr>
+            </table>
+        </div>
+    </div> <!-- 结束second-view -->
     <div class="champion-overlay" id="championOverlay">
         <div class="champion-overlay-content">
             <button class="close-btn" id="closeOverlay" title="关闭">×</button>
@@ -78,6 +296,8 @@
     </div>
     <!-- 引入视差滚动脚本 -->
     <script src="parallax.js"></script>
+    <!-- 引入赛程获取脚本 -->
+    <script src="raceScheduleFetcher.js"></script>
     <script>
         const navList = document.getElementById('navList');
         const slider = document.getElementById('slider');
@@ -199,6 +419,119 @@
         document.querySelector('.sidebar-item').onclick = function() {
             window.location.href = 'game.html';
         };
+        
+        // 倒计时功能与时间显示
+        function updateCountdown() {
+            // 定义所有赛事的时间（日本时区UTC+9）
+            const eventTimes = {
+                fp1: new Date('2024-09-20T11:30:00+09:00'), // 练习赛1
+                fp2: new Date('2024-09-20T15:00:00+09:00'), // 练习赛2
+                fp3: new Date('2024-09-21T10:30:00+09:00'), // 练习赛3
+                quali: new Date('2024-09-21T14:00:00+09:00'), // 排位赛
+                race: new Date('2024-09-22T06:00:00+09:00')  // 正赛
+            };
+            
+            const now = new Date();
+            
+            // 更新所有赛事的倒计时
+            for (const [eventId, eventTime] of Object.entries(eventTimes)) {
+                // 计算倒计时
+                const diff = eventTime - now;
+                
+                // 如果比赛已经开始，显示00:00:00:00
+                if (diff <= 0) {
+                    document.getElementById(`${eventId}-days`).textContent = '00';
+                    document.getElementById(`${eventId}-hours`).textContent = '00';
+                    document.getElementById(`${eventId}-minutes`).textContent = '00';
+                    document.getElementById(`${eventId}-seconds`).textContent = '00';
+                    continue;
+                }
+                
+                // 计算剩余时间
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                // 更新显示
+                document.getElementById(`${eventId}-days`).textContent = days < 10 ? '0' + days : days;
+                document.getElementById(`${eventId}-hours`).textContent = hours < 10 ? '0' + hours : hours;
+                document.getElementById(`${eventId}-minutes`).textContent = minutes < 10 ? '0' + minutes : minutes;
+                document.getElementById(`${eventId}-seconds`).textContent = seconds < 10 ? '0' + seconds : seconds;
+            }
+        }
+        
+        // 显示用户所在地时区的比赛时间
+        function displayUserLocalTime() {
+            // 定义所有赛事的时间（日本时区UTC+9）
+            const eventTimes = {
+                fp1: new Date('2024-09-20T11:30:00+09:00'), // 练习赛1
+                fp2: new Date('2024-09-20T15:00:00+09:00'), // 练习赛2
+                fp3: new Date('2024-09-21T10:30:00+09:00'), // 练习赛3
+                quali: new Date('2024-09-21T14:00:00+09:00'), // 排位赛
+                race: new Date('2024-09-22T06:00:00+09:00')  // 正赛
+            };
+            
+            // 获取用户时区信息
+            const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            
+            // 遍历所有赛事，计算并显示用户时区的时间
+            for (const [eventId, eventTime] of Object.entries(eventTimes)) {
+                const elementId = `${eventId}-user-time`;
+                
+                // 转换为用户本地时间
+                const userEventTime = new Date(eventTime);
+                
+                // 格式化时间显示
+                const hours = userEventTime.getHours();
+                const minutes = userEventTime.getMinutes();
+                const amPm = hours >= 12 ? '下午' : '上午';
+                const formattedHours = hours % 12 || 12; // 转换为12小时制
+                const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+                
+                // 计算时段结束时间（除了正赛外，其他都是1小时）
+                let endTimeText = '';
+                if (eventId !== 'race') {
+                    const endTime = new Date(userEventTime);
+                    endTime.setHours(endTime.getHours() + 1);
+                    
+                    const endHours = endTime.getHours();
+                    const endMinutes = endTime.getMinutes();
+                    const endAmPm = endHours >= 12 ? '下午' : '上午';
+                    const formattedEndHours = endHours % 12 || 12;
+                    const formattedEndMinutes = endMinutes < 10 ? '0' + endMinutes : endMinutes;
+                    
+                    endTimeText = `-${formattedEndHours}:${formattedEndMinutes}`;
+                }
+                
+                // 更新显示
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = `您的时间: ${amPm} ${formattedHours}:${formattedMinutes}${endTimeText}`;
+                }
+            }
+        }
+        
+        // 初始更新一次
+        updateCountdown();
+        displayUserLocalTime();
+        
+        // 每秒更新倒计时
+        setInterval(updateCountdown, 1000);
+        
+        // 处理积分榜的司机/团队切换功能
+        const navItems = document.querySelectorAll('.standings-nav .nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // 移除所有active类
+                navItems.forEach(i => i.classList.remove('active'));
+                // 给当前点击的添加active类
+                this.classList.add('active');
+                
+                // 这里可以添加切换显示司机/团队积分榜的逻辑
+                // 当前只做了UI交互，没有实际数据切换
+            });
+        });
     </script>
 </body>
 </html> 
