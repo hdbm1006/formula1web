@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1赛车图片</title>
+    <style>
+        body {
+            background: #181818;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #e53935;
+        }
+        .car-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px auto;
+        }
+        .car-item {
+            max-width: 400px;
+            border: 3px solid #e53935;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        .caption {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #e53935;
+        }
+    </style>
+</head>
+<body>
+    <h1>F1 像素风赛车图片</h1>
+    
+    <div class="car-container">
+        <!-- 尝试方式1：直接使用图片名称 -->
+        <div class="car-item">
+            <img src="法拉利.png" alt="法拉利赛车">
+            <p class="caption">法拉利赛车 (直接文件名)</p>
+        </div>
+        
+        <div class="car-item">
+            <img src="迈凯轮.png" alt="迈凯轮赛车">
+            <p class="caption">迈凯轮赛车 (直接文件名)</p>
+        </div>
+        
+        <!-- 尝试方式2：使用@符号 -->
+        <div class="car-item">
+            <img src="@法拉利.png" alt="法拉利赛车">
+            <p class="caption">法拉利赛车 (带@符号)</p>
+        </div>
+        
+        <div class="car-item">
+            <img src="@迈凯轮.png" alt="迈凯轮赛车">
+            <p class="caption">迈凯轮赛车 (带@符号)</p>
+        </div>
+        
+        <!-- 尝试方式3：使用相对路径 -->
+        <div class="car-item">
+            <img src="./法拉利.png" alt="法拉利赛车">
+            <p class="caption">法拉利赛车 (相对路径./)</p>
+        </div>
+        
+        <div class="car-item">
+            <img src="./迈凯轮.png" alt="迈凯轮赛车">
+            <p class="caption">迈凯轮赛车 (相对路径./)</p>
+        </div>
+        
+        <!-- 尝试方式4：使用images文件夹 -->
+        <div class="car-item">
+            <img src="images/法拉利.png" alt="法拉利赛车">
+            <p class="caption">法拉利赛车 (images文件夹)</p>
+        </div>
+        
+        <div class="car-item">
+            <img src="images/迈凯轮.png" alt="迈凯轮赛车">
+            <p class="caption">迈凯轮赛车 (images文件夹)</p>
+        </div>
+    </div>
+    
+    <p>请检查显示的图片，确定正确的路径后再将其应用到主页面。</p>
+</body>
+</html> 

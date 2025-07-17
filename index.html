@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <!-- 添加Logo和网站名称 -->
+        <div class="brand-container">
+            <img src="images/10001.svg" alt="F1 Logo">
+            <span class="site-title">｜粉丝站</span>
+        </div>
+        
+        <ul class="nav-list" id="navList">
+            <li><a href="circuit.html">赛道信息</a></li>
+            <li><a href="team.html">车队信息</a></li>
+            <li><a href="#">比赛信息</a></li>
+            <li style="position: relative;" id="championMenu">
+                <a href="#">历年冠军</a>
+                <ul class="dropdown" id="championDropdown">
+                </ul>
+            </li>
+            <div class="slider" id="slider"></div>
+        </ul>
+    </nav>
+    
+    <!-- 方格条移动到顶栏下方 -->
+    <div class="checkered-bar"></div>
+    
+    <!-- 添加F1赛车图片展示区域 -->
+    <div class="pixel-cars-container">
+        <div class="pixel-car">
+            <img src="images/法拉利.png" alt="像素风法拉利F1赛车" class="no-hover ferrari ferrari-left">
+        </div>
+        <div class="pixel-car">
+            <img src="images/迈凯轮.png" alt="像素风迈凯轮F1赛车" class="mclaren offset-down">
+        </div>
+    </div>
+    
+    <!-- 添加全屏F1 logo和文本区域 -->
+    <div class="fullscreen-section">
+        <div class="racing-line left"></div>
+        <div class="racing-line right"></div>
+        <div class="logo-container">
+            <img src="images/10001.svg" alt="F1 Logo" class="f1-logo">
+            <div class="logo-text">F1 BABY</div>
+        </div>
+    </div>
+    
+    <div class="champion-info" id="championInfo">
+        <h2 id="championYear"></h2>
+        <table>
+            <tr><th>车手</th><td id="championDriver"></td></tr>
+            <tr><th>国籍</th><td id="championNation"></td></tr>
+            <tr><th>车队</th><td id="championTeam"></td></tr>
+        </table>
+    </div>
+    <div class="champion-overlay" id="championOverlay">
+        <div class="champion-overlay-content">
+            <button class="close-btn" id="closeOverlay" title="关闭">×</button>
+            <h2 id="overlayYear"></h2>
+            <table>
+                <tr><th>车手</th><td id="overlayDriver"></td></tr>
+                <tr><th>国籍</th><td id="overlayNation"></td></tr>
+                <tr><th>车队</th><td id="overlayTeam"></td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-content" id="sidebarContent">
+            <ul>
+                <li class="sidebar-item">🎮 小游戏</li>
+            </ul>
+        </div>
+    </div>
+    <!-- 引入视差滚动脚本 -->
+    <script src="parallax.js"></script>
+    <script>
+        const navList = document.getElementById('navList');
+        const slider = document.getElementById('slider');
+        const navLinks = navList.querySelectorAll('a');
+
+        navList.addEventListener('mousemove', (e) => {
+            const target = e.target;
+            if (target.tagName === 'A') {
+                const rect = target.getBoundingClientRect();
+                const navRect = navList.getBoundingClientRect();
+                slider.style.width = rect.width + 'px';
+                slider.style.left = (rect.left - navRect.left) + 'px';
+                slider.style.opacity = 1;
+            }
+        });
+        navList.addEventListener('mouseleave', () => {
+            slider.style.width = 0;
+            slider.style.opacity = 0;
+        });
+
+        // 下拉菜单显示/隐藏（延迟隐藏）
+        let hideDropdownTimer = null;
+        const championMenu = document.getElementById('championMenu');
+        const championDropdown = document.getElementById('championDropdown');
+        championMenu.addEventListener('mouseenter', () => {
+            if (hideDropdownTimer) {
+                clearTimeout(hideDropdownTimer);
+                hideDropdownTimer = null;
+            }
+            championDropdown.style.display = 'block';
+        });
+        championMenu.addEventListener('mouseleave', () => {
+            hideDropdownTimer = setTimeout(() => {
+                championDropdown.style.display = 'none';
+            }, 300); // 300ms延迟
+        });
+        championDropdown.addEventListener('mouseenter', () => {
+            if (hideDropdownTimer) {
+                clearTimeout(hideDropdownTimer);
+                hideDropdownTimer = null;
+            }
+            championDropdown.style.display = 'block';
+        });
+        championDropdown.addEventListener('mouseleave', () => {
+            hideDropdownTimer = setTimeout(() => {
+                championDropdown.style.display = 'none';
+            }, 300);
+        });
+
+        // 动态生成1980-2025年菜单项
+        const dropdown = document.getElementById('championDropdown');
+        for(let year=2025; year>=1980; year--){
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#';
+            a.textContent = year + '年';
+            li.appendChild(a);
+            dropdown.appendChild(li);
+        }
+
+        // 历年冠军数据
+        const championData = {
+            2024: {driver: '小维斯塔潘（Max Verstappen）', nation: '荷兰', team: '红牛'},
+            2023: {driver: '小维斯塔潘（Max Verstappen）', nation: '荷兰', team: '红牛'},
+            2022: {driver: '小维斯塔潘（Max Verstappen）', nation: '荷兰', team: '红牛'},
+            2021: {driver: '小维斯塔潘（Max Verstappen）', nation: '荷兰', team: '红牛'},
+            2020: {driver: '汉密尔顿（Lewis Hamilton）', nation: '英国', team: '梅赛德斯奔驰'},
+            2019: {driver: '汉密尔顿（Lewis Hamilton）', nation: '英国', team: '梅赛德斯奔驰'},
+            2018: {driver: '汉密尔顿（Lewis Hamilton）', nation: '英国', team: '梅赛德斯奔驰'},
+            2017: {driver: '汉密尔顿（Lewis Hamilton）', nation: '英国', team: '梅赛德斯奔驰'},
+            2016: {driver: '罗斯博格（Nico Rosberg）', nation: '德国', team: '梅赛德斯奔驰'},
+            2015: {driver: '汉密尔顿（Lewis Hamilton）', nation: '英国', team: '梅赛德斯奔驰'},
+            2014: {driver: '汉密尔顿（Lewis Hamilton）', nation: '英国', team: '梅赛德斯奔驰'},
+            2013: {driver: '维特尔（Sebastian Vettel）', nation: '德国', team: '红牛-雷诺'},
+            2012: {driver: '维特尔（Sebastian Vettel）', nation: '德国', team: '红牛-雷诺'},
+            2011: {driver: '维特尔（Sebastian Vettel）', nation: '德国', team: '红牛-雷诺'},
+            2010: {driver: '维特尔（Sebastian Vettel）', nation: '德国', team: '红牛-雷诺'},
+            2009: {driver: '巴顿（Jenson Button）', nation: '英国', team: '布朗GP'},
+            2008: {driver: '汉密尔顿（Lewis Hamilton）', nation: '英国', team: '迈凯轮'},
+            2007: {driver: '莱科宁（Kimi Raikkonen）', nation: '芬兰', team: '法拉利'},
+            2006: {driver: '阿隆索（Fernando Alonso）', nation: '西班牙', team: '雷诺'},
+            2005: {driver: '阿隆索（Fernando Alonso）', nation: '西班牙', team: '雷诺'},
+            2004: {driver: '舒马赫（Michael Schumacher）', nation: '德国', team: '法拉利'},
+            2003: {driver: '舒马赫（Michael Schumacher）', nation: '德国', team: '法拉利'},
+            2002: {driver: '舒马赫（Michael Schumacher）', nation: '德国', team: '法拉利'},
+            2001: {driver: '舒马赫（Michael Schumacher）', nation: '德国', team: '法拉利'},
+            2000: {driver: '舒马赫（Michael Schumacher）', nation: '德国', team: '法拉利'},
+            1999: {driver: '哈基宁（Mika Hakkinen）', nation: '芬兰', team: '迈凯轮'},
+            1998: {driver: '哈基宁（Mika Hakkinen）', nation: '芬兰', team: '迈凯轮'},
+            1997: {driver: '维伦纽夫（Jacques Villeneuve）', nation: '加拿大', team: '威廉姆斯'},
+            1996: {driver: 'D-希尔（Damon Hill）', nation: '英国', team: '威廉姆斯'},
+            1995: {driver: '舒马赫（Michael Schumacher）', nation: '德国', team: '贝纳通'},
+            1994: {driver: '舒马赫（Michael Schumacher）', nation: '德国', team: '贝纳通'},
+            1993: {driver: '普罗斯特（Alain Prost）', nation: '法国', team: '威廉姆斯'},
+            1992: {driver: '曼塞尔（Nigel Mansell）', nation: '英国', team: '威廉姆斯'},
+            1991: {driver: '塞纳（Ayrton Senna）', nation: '巴西', team: '迈凯轮'},
+            1990: {driver: '塞纳（Ayrton Senna）', nation: '巴西', team: '迈凯轮'},
+            1989: {driver: '普罗斯特（Alain Prost）', nation: '法国', team: '迈凯轮'},
+            1988: {driver: '塞纳（Ayrton Senna）', nation: '巴西', team: '迈凯轮'},
+            1987: {driver: '皮奎特（Nelson Piquet）', nation: '巴西', team: '威廉姆斯'},
+            1986: {driver: '普罗斯特（Alain Prost）', nation: '法国', team: '迈凯轮'},
+            1985: {driver: '普罗斯特（Alain Prost）', nation: '法国', team: '迈凯轮'},
+            1984: {driver: '劳达（Niki Lauda）', nation: '奥地利', team: '迈凯轮'},
+            1983: {driver: '皮奎特（Nelson Piquet）', nation: '巴西', team: '布拉汉姆'},
+            1982: {driver: '罗斯博格（Keke Rosberg）', nation: '芬兰', team: '威廉姆斯'},
+            1981: {driver: '皮奎特（Nelson Piquet）', nation: '巴西', team: '布拉汉姆'},
+            1980: {driver: '琼斯（Alan Jones）', nation: '澳大利亚', team: '威廉姆斯'}
+        };
+        // 绑定年份点击事件，跳转到champion.html
+        dropdown.addEventListener('click', function(e) {
+            if(e.target.tagName === 'A') {
+                const year = e.target.textContent.replace('年','');
+                window.location.href = `champion.html?year=${year}`;
+            }
+        });
+
+        // 右侧任务栏展开/收起（改为悬浮自动展开，无需点击）
+        // 移除点击事件
+        document.querySelector('.sidebar-item').onclick = function() {
+            window.location.href = 'game.html';
+        };
+    </script>
+</body>
+</html> 

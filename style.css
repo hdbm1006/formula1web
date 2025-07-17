@@ -1,0 +1,555 @@
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #181818;
+    min-height: 100vh;
+    padding-top: 80px; /* 为固定顶栏预留空间 */
+}
+.navbar {
+    background: rgba(24, 24, 24, 0.8);
+    padding: 20px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: background-color 0.3s ease;
+    height: 72px; /* 明确设置高度 */
+    box-sizing: border-box; /* 确保padding不影响总高度 */
+}
+
+/* Logo和标题容器 */
+.brand-container {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.brand-container img {
+    height: 60px;
+    width: auto;
+}
+
+.brand-container .site-title {
+    color: #e53935;
+    font-size: 22px;
+    font-weight: bold;
+    margin-left: 15px;
+    white-space: nowrap;
+}
+
+/* 导航调整，为logo腾出空间 */
+.nav-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0 150px;
+    position: relative;
+}
+.nav-list li {
+    margin: 0 30px;
+    position: relative;
+}
+.nav-list a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.2s;
+    padding: 5px 20px;
+    display: inline-block;
+    position: relative;
+    background: none;
+    box-sizing: border-box;
+    text-shadow: 1px 1px 2px #000, -1px -1px 2px #000, 1px -1px 2px #000, -1px 1px 2px #000;
+}
+.nav-list a:hover {
+    color: #e53935;
+}
+.slider {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    background: #e53935;
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    width: 0;
+    pointer-events: none;
+}
+.dropdown {
+    display: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 38px;
+    background: #222;
+    min-width: 120px;
+    box-shadow: 0 4px 16px rgba(229,57,53,0.08);
+    border-radius: 6px;
+    padding: 8px 0;
+    z-index: 10;
+    list-style: none;
+    max-height: 240px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #ff9800 #eee;
+}
+/* 美化滚动条（仅webkit浏览器） */
+.dropdown::-webkit-scrollbar {
+    width: 6px;
+    background: #eee;
+}
+.dropdown::-webkit-scrollbar-thumb {
+    background: #ff9800;
+    border-radius: 3px;
+}
+.dropdown li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.dropdown a {
+    color: #fff;
+    padding: 8px 24px;
+    display: block;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+}
+.dropdown a:hover {
+    background: #e53935;
+    color: #fff;
+}
+.champion-info {
+    max-width: 400px;
+    margin: 40px auto 0 auto;
+    background: #222;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(229,57,53,0.08);
+    padding: 24px 32px;
+    text-align: center;
+    font-size: 18px;
+    display: none;
+}
+.champion-info h2 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #e53935;
+}
+.champion-info table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+}
+.champion-info th, .champion-info td {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+.champion-info th {
+    color: #e57373;
+    font-weight: normal;
+}
+.champion-info td {
+    color: #fff;
+}
+.champion-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.85);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    /* 让内容区域始终撑满整个页面 */
+}
+.champion-overlay.active {
+    display: flex;
+}
+.champion-overlay-content {
+    background: #181818;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    min-width: 0;
+    max-width: 100vw;
+    min-height: 0;
+    max-height: 100vh;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn .3s;
+}
+@keyframes fadeIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.champion-overlay-content h2 {
+    margin-top: 0;
+    font-size: 28px;
+    color: #e53935;
+}
+.champion-overlay-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 18px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.champion-overlay-content th, .champion-overlay-content td {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+.champion-overlay-content th {
+    color: #e57373;
+    font-weight: normal;
+}
+.champion-overlay-content td {
+    color: #fff;
+}
+.close-btn {
+    position: absolute;
+    top: 24px;
+    right: 36px;
+    background: none;
+    border: none;
+    font-size: 26px;
+    color: #e57373;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.close-btn:hover {
+    color: #e53935;
+}
+/* 右侧可展开任务栏 */
+.sidebar {
+    position: fixed;
+    top: 80px;
+    right: 0;
+    width: 220px;
+    background: #181818;
+    border-left: 2px solid #e53935;
+    box-shadow: -2px 0 8px rgba(229,57,53,0.08);
+    border-radius: 8px 0 0 8px;
+    z-index: 10000;
+    transition: transform 0.3s;
+    transform: translateX(220px);
+}
+.sidebar.open,
+.sidebar:hover {
+    transform: translateX(0);
+}
+.sidebar-content {
+    padding: 24px 16px 16px 16px;
+}
+.sidebar-content ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.sidebar-item {
+    padding: 12px 0;
+    color: #fff;
+    font-size: 17px;
+    border-bottom: 1px solid #e53935;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.sidebar-item:last-child {
+    border-bottom: none;
+}
+.sidebar-item:hover {
+    color: #e53935;
+}
+@media (max-width: 900px) {
+    .sidebar { display: none; }
+}
+
+/* 方格条 - 初始在中央靠上 */
+.checkered-bar {
+    background: repeating-linear-gradient(0deg, #fff 0 20px, #111 20px 40px),
+                repeating-linear-gradient(90deg, #fff 0 20px, #111 20px 40px);
+    background-blend-mode: difference;
+    background-size: 40px 40px;
+    padding: 30px 0;
+    width: 100%;
+    /* 初始位置 */
+    position: relative;
+    z-index: 5; /* 图层在赛车图片底部 */
+    margin-top: 100px; /* 初始距离顶部的距离 */
+    transition: all 0.3s ease; /* 平滑过渡效果 */
+}
+
+/* 方格条吸顶样式 */
+.checkered-bar.sticky {
+    position: fixed;
+    top: 72px; /* 顶栏高度 */
+    left: 0;
+    margin-top: 0;
+}
+
+/* 像素风赛车展示区样式 */
+.pixel-cars-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 40px auto 60px; /* 恢复正常边距 */
+    max-width: 1200px;
+    position: relative;
+    z-index: 10; /* 确保在方格条上方 */
+    flex-wrap: wrap; /* 允许在较小屏幕上换行 */
+}
+
+.pixel-car {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-basis: calc(50% - 40px); /* 每个车占据容器的一半宽度减去间距 */
+    max-width: 400px; /* 限制最大宽度 */
+}
+
+/* 赛车通用样式 */
+.pixel-car img {
+    max-width: 360px;
+    height: auto;
+    border: none;
+    box-shadow: none;
+    transition: transform 0.3s ease;
+    will-change: transform;
+}
+
+/* 法拉利图片特定样式 */
+.pixel-car img.ferrari {
+    /* 只定义基础样式，让JavaScript控制视差效果 */
+    transition: transform 0.3s ease;
+}
+
+/* 左侧法拉利 */
+.pixel-car img.ferrari-left {
+    /* 基础样式继承自.ferrari */
+}
+
+/* 迈凯轮图片特定样式 */
+.pixel-car img.mclaren {
+    transition: transform 0.3s ease;
+    transform: rotate(180deg);
+}
+
+/* 下移效果 - 用于右侧图片 */
+.pixel-car img.offset-down {
+    /* 下移20px */
+    margin-top: 20px;
+}
+
+/* 图片悬停效果 */
+.pixel-car img:hover {
+    /* 通用悬停效果，会被特定样式覆盖 */
+    transform: scale(1.05);
+}
+
+/* 法拉利图片悬停效果 */
+.pixel-car img.ferrari:hover {
+    /* 悬停效果与视差效果结合 */
+    transform: scale(1.05);
+    /* 具体变换将由JavaScript控制 */
+}
+
+.car-label {
+    margin-top: 15px;
+    color: #fff;
+    font-size: 18px;
+    background-color: #e53935;
+    padding: 6px 16px;
+    border-radius: 4px;
+}
+
+@media (max-width: 900px) {
+    .pixel-cars-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+    
+    .pixel-car img {
+        max-width: 90%;
+    }
+}
+
+/* 冠军弹窗样式 */
+#championPopup {
+    position: fixed;
+    left: 0; top: 0; right: 0; bottom: 0;
+    z-index: 99999;
+    display: none;
+}
+#championPopup .popup-mask {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+}
+#championPopup .popup-content {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%,-50%);
+    background: #222;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(229,57,53,0.18);
+    padding: 36px 48px 28px 48px;
+    min-width: 320px;
+    max-width: 90vw;
+    color: #fff;
+    border: 2px solid #e53935;
+    text-align: center;
+}
+#championPopup h2 {
+    color: #e53935;
+    margin-top: 0;
+    margin-bottom: 18px;
+}
+#championPopup table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+#championPopup th {
+    color: #e57373;
+    font-weight: normal;
+    width: 60px;
+    text-align: right;
+    padding-right: 10px;
+}
+#championPopup td {
+    color: #fff;
+    text-align: left;
+}
+#championPopup .popup-close {
+    position: absolute;
+    top: 12px;
+    right: 18px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #e57373;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+#championPopup .popup-close:hover {
+    color: #e53935;
+} 
+
+/* 全屏F1 logo和文本区域 */
+.fullscreen-section {
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0; /* 移除上下边距 */
+    position: relative;
+    overflow: hidden;
+    z-index: 20; /* 提高z-index，确保覆盖方格条 */
+}
+
+.fullscreen-section:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(229, 57, 53, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+    z-index: -1;
+}
+
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: translateZ(0);
+    will-change: transform;
+    z-index: 2;
+}
+
+.f1-logo {
+    width: 70%;
+    max-width: 600px;
+    height: auto;
+    filter: drop-shadow(0 0 10px rgba(229, 57, 53, 0.5));
+    animation: glow 4s infinite alternate;
+}
+
+.logo-text {
+    font-size: 5rem;
+    font-weight: 900;
+    color: white;
+    margin-top: 20px;
+    font-family: 'Arial Black', Arial, sans-serif;
+    letter-spacing: 4px;
+    text-shadow: 0 0 10px rgba(229, 57, 53, 0.8);
+    animation: pulse 2s infinite alternate;
+}
+
+@keyframes glow {
+    0% {
+        filter: drop-shadow(0 0 5px rgba(229, 57, 53, 0.5));
+    }
+    100% {
+        filter: drop-shadow(0 0 20px rgba(229, 57, 53, 0.8));
+    }
+}
+
+@keyframes pulse {
+    0% {
+        text-shadow: 0 0 5px rgba(229, 57, 53, 0.5);
+    }
+    100% {
+        text-shadow: 0 0 15px rgba(229, 57, 53, 0.9), 0 0 30px rgba(229, 57, 53, 0.3);
+    }
+}
+
+/* 赛道线条 */
+.racing-line {
+    position: absolute;
+    height: 100%;
+    width: 40px;
+    background-color: #e53935;
+    opacity: 0.15;
+}
+
+.racing-line.left {
+    left: 10%;
+    transform: skew(-20deg);
+}
+
+.racing-line.right {
+    right: 10%;
+    transform: skew(-20deg);
+}
+
+@media (max-width: 900px) {
+    .f1-logo {
+        width: 90%;
+    }
+    
+    .logo-text {
+        font-size: 3rem;
+    }
+} 

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1发车灯反应小游戏</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #181818;
+            color: #fff;
+        }
+        .container {
+            max-width: 420px;
+            margin: 60px auto;
+            background: #222;
+            border-radius: 12px;
+            box-shadow: 0 2px 16px rgba(229,57,53,0.12);
+            padding: 36px 32px 32px 32px;
+            text-align: center;
+            border: 2px solid #e53935;
+        }
+        h1 {
+            color: #e53935;
+            margin-bottom: 32px;
+        }
+        .lights-bar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 36px;
+            margin-top: 8px;
+        }
+        .lights-header {
+            width: 320px;
+            height: 48px;
+            background: #111;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 2px 12px #0008;
+        }
+        .f1-logo {
+            font-family: 'Arial Black', Arial, sans-serif;
+            font-size: 38px;
+            color: #e53935;
+            letter-spacing: 2px;
+            font-style: italic;
+            font-weight: bold;
+            user-select: none;
+        }
+        .lights {
+            display: flex;
+            justify-content: center;
+            gap: 28px;
+            background: #222;
+            padding: 18px 28px 10px 28px;
+            border-radius: 0 0 18px 18px;
+            box-shadow: 0 4px 18px #0006;
+        }
+        .lights-bottom {
+            margin-top: -8px;
+            border-radius: 0 0 18px 18px;
+            box-shadow: 0 4px 18px #0006;
+        }
+        .light {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 60% 30%, #a00 60%, #e53935 90%, #600 100%);
+            border: 3px solid #e53935;
+            box-shadow: 0 0 8px #e5393533, 0 0 0 #e53935;
+            margin-bottom: 4px;
+            transition: background 0.3s, box-shadow 0.3s, transform 0.25s cubic-bezier(.4,2,.6,1);
+            position: relative;
+            transform: scale(0.92);
+            opacity: 0.7;
+        }
+        .light.on {
+            background: radial-gradient(circle at 60% 30%, #fff 10%, #e53935 60%, #a00 100%);
+            box-shadow: 0 0 32px 10px #e53935, 0 0 8px #e53935;
+            transform: scale(1.12);
+            opacity: 1;
+            animation: light-blink 0.3s;
+        }
+        @keyframes light-blink {
+            0% { transform: scale(0.92); opacity: 0.7; }
+            60% { transform: scale(1.18); opacity: 1; }
+            100% { transform: scale(1.12); opacity: 1; }
+        }
+        .light-shadow {
+            display: none;
+        }
+        .pedal-btn {
+            margin-top: 18px;
+            padding: 14px 38px;
+            font-size: 20px;
+            background: linear-gradient(90deg,#e53935 60%,#b71c1c 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #e5393533;
+            transition: background 0.2s, transform 0.1s;
+            font-weight: bold;
+            letter-spacing: 2px;
+            display: none;
+        }
+        .pedal-btn:active {
+            background: #b71c1c;
+            transform: scale(0.97);
+        }
+        .start-btn {
+            margin-bottom: 24px;
+            padding: 14px 38px;
+            font-size: 20px;
+            background: linear-gradient(90deg,#e53935 60%,#b71c1c 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #e5393533;
+            transition: background 0.2s, transform 0.1s;
+            font-weight: bold;
+            letter-spacing: 2px;
+            display: inline-block;
+        }
+        .start-btn:active {
+            background: #b71c1c;
+            transform: scale(0.97);
+        }
+        .result {
+            margin-top: 28px;
+            font-size: 22px;
+            color: #e53935;
+            min-height: 32px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 32px;
+            padding: 7px 18px;
+            background: #181818;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            border: 2px solid #e53935;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+        }
+        .back-btn:hover {
+            background: #e53935;
+            color: #fff;
+            border: 2px solid #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>F1发车灯反应小游戏</h1>
+        <div class="lights-bar">
+            <div class="lights-header">
+                <span class="f1-logo">F1</span>
+            </div>
+            <div class="lights" id="lights">
+                <div class="light-group"><div class="light" id="light1"></div></div>
+                <div class="light-group"><div class="light" id="light2"></div></div>
+                <div class="light-group"><div class="light" id="light3"></div></div>
+                <div class="light-group"><div class="light" id="light4"></div></div>
+                <div class="light-group"><div class="light" id="light5"></div></div>
+            </div>
+            <div class="lights lights-bottom" id="lights2">
+                <div class="light-group"><div class="light" id="light6"></div></div>
+                <div class="light-group"><div class="light" id="light7"></div></div>
+                <div class="light-group"><div class="light" id="light8"></div></div>
+                <div class="light-group"><div class="light" id="light9"></div></div>
+                <div class="light-group"><div class="light" id="light10"></div></div>
+            </div>
+        </div>
+        <button class="start-btn" id="startBtn">开始游戏</button>
+        <button class="pedal-btn" id="pedalBtn" style="display:none;">油门！</button>
+        <div class="result" id="result"></div>
+        <a href="index.html" class="back-btn">← 返回首页</a>
+    </div>
+    <script>
+        const lights = [
+            document.getElementById('light1'),
+            document.getElementById('light2'),
+            document.getElementById('light3'),
+            document.getElementById('light4'),
+            document.getElementById('light5'),
+            document.getElementById('light6'),
+            document.getElementById('light7'),
+            document.getElementById('light8'),
+            document.getElementById('light9'),
+            document.getElementById('light10')
+        ];
+        const pedalBtn = document.getElementById('pedalBtn');
+        const resultDiv = document.getElementById('result');
+        let canClick = false;
+        let startTime = 0;
+        let endTime = 0;
+        let lightsOut = false;
+        let timeoutIds = [];
+
+        function resetGame() {
+            lights.forEach(l => l.classList.remove('on'));
+            resultDiv.textContent = '';
+            canClick = false;
+            lightsOut = false;
+            startTime = 0;
+            endTime = 0;
+            timeoutIds.forEach(id => clearTimeout(id));
+            timeoutIds = [];
+        }
+
+        function startSequence() {
+            // 依次点亮五列红灯（每列上下同时亮）
+            for(let i=0; i<5; i++) {
+                timeoutIds.push(setTimeout(() => {
+                    lights[i].classList.add('on');
+                    lights[i+5].classList.add('on');
+                }, i*700));
+            }
+            // 红灯全部点亮后，1~8秒后熄灭
+            const randomDelay = 1000 + Math.random() * 7000; // 1~8秒
+            timeoutIds.push(setTimeout(() => {
+                lights.forEach(l => l.classList.remove('on'));
+                lightsOut = true;
+                startTime = performance.now();
+                canClick = true;
+            }, 5*700 + randomDelay));
+        }
+
+        pedalBtn.onclick = function() {
+            if(pedalBtn.disabled) return;
+            if(!lightsOut) {
+                resultDiv.textContent = '违例！红灯未熄灭！';
+                canClick = false;
+                pedalBtn.disabled = true;
+                setTimeout(() => {
+                    pedalBtn.style.display = 'none';
+                    startBtn.style.display = 'inline-block';
+                    pedalBtn.disabled = false;
+                    resetGame();
+                }, 2000);
+                return;
+            }
+            pedalBtn.disabled = true;
+            endTime = performance.now();
+            const reaction = (endTime - startTime) / 1000;
+            resultDiv.textContent = `你的反应时间：${reaction.toFixed(3)} 秒！`;
+            setTimeout(() => {
+                pedalBtn.style.display = 'none';
+                startBtn.style.display = 'inline-block';
+                pedalBtn.disabled = false;
+                resetGame();
+            }, 2500);
+        };
+
+        const startBtn = document.getElementById('startBtn');
+        startBtn.onclick = function() {
+            startBtn.style.display = 'none';
+            pedalBtn.style.display = 'inline-block';
+            resetGame();
+            setTimeout(startSequence, 800);
+        };
+        // 初始只显示开始按钮
+        pedalBtn.style.display = 'none';
+        startBtn.style.display = 'inline-block';
+
+        // 初始启动
+        resetGame();
+    </script>
+</body>
+</html> 

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1车队与车手信息</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #181818;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            background: #181818;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(229,57,53,0.08);
+            padding: 32px 24px;
+            border: 2px solid #e53935;
+        }
+        h1 {
+            text-align: center;
+            color: #e53935;
+            margin-bottom: 32px;
+        }
+        .scroll-table {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+            background: #222;
+            border: 2px solid #e53935;
+        }
+        th, td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #e53935;
+            text-align: center;
+            color: #fff;
+        }
+        th {
+            background: #181818;
+            color: #e57373;
+            font-weight: bold;
+            border-bottom: 2px solid #e53935;
+        }
+        tr:hover {
+            background: inherit;
+        }
+        .driver-list {
+            text-align: left;
+            line-height: 1.7;
+        }
+        .driver-name {
+            font-weight: bold;
+            color: #e53935;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 18px;
+            padding: 7px 18px;
+            background: #181818;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            border: 2px solid #e53935;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+        }
+        .back-btn:hover {
+            background: #e53935;
+            color: #fff;
+            border: 2px solid #fff;
+        }
+        @media (max-width: 700px) {
+            .container { padding: 8px; }
+            table { min-width: 600px; }
+            th, td { padding: 8px 2px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← 返回首页</a>
+        <h1>2025 F1参赛车队与车手名单</h1>
+        <div class="scroll-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>参赛车队</th>
+                        <th>车手名单</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>迈凯伦车队</td>
+                        <td class="driver-list">
+                            <span class="driver-name">奥斯卡·皮亚斯特里</span><br>
+                            国籍：澳大利亚<br>
+                            车号：#81<br>
+                            生日：2001/04/06<br>
+                            领奖台次数：10<br><br>
+                            <span class="driver-name">兰多·诺里斯</span><br>
+                            国籍：英国<br>
+                            车号：#4<br>
+                            生日：1999/11/13<br>
+                            领奖台次数：26
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>法拉利车队</td>
+                        <td class="driver-list">
+                            <span class="driver-name">夏尔·勒克莱尔</span><br>
+                            国籍：摩纳哥<br>
+                            车号：#16<br>
+                            生日：1997/10/16<br>
+                            领奖台次数：43<br><br>
+                            <span class="driver-name">刘易斯·汉密尔顿</span><br>
+                            国籍：英国<br>
+                            车号：#44<br>
+                            生日：1985/01/07<br>
+                            领奖台次数：202
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>红牛车队</td>
+                        <td class="driver-list">
+                            <span class="driver-name">麦克斯·维斯塔潘</span><br>
+                            国籍：荷兰<br>
+                            车号：#1<br>
+                            生日：1997/09/30<br>
+                            领奖台次数：112<br><br>
+                            <span class="driver-name">利亚姆·劳森</span><br>
+                            国籍：新西兰<br>
+                            车号：#30<br>
+                            生日：2002/02/11<br>
+                            领奖台次数：0
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>梅赛德斯车队</td>
+                        <td class="driver-list">
+                            <span class="driver-name">乔治·拉塞尔</span><br>
+                            国籍：英国<br>
+                            车号：#63<br>
+                            生日：1998/02/15<br>
+                            领奖台次数：15<br><br>
+                            <span class="driver-name">安德烈亚·基米·安东内利</span><br>
+                            国籍：意大利<br>
+                            车号：#12<br>
+                            生日：2006/08/25<br>
+                            领奖台次数：0
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>阿斯顿·马丁车队</td>
+                        <td class="driver-list">
+                            <span class="driver-name">兰斯·斯特罗尔</span><br>
+                            国籍：加拿大<br>
+                            车号：#18<br>
+                            生日：1998/10/29<br>
+                            领奖台次数：3<br><br>
+                            <span class="driver-name">费尔南多·阿隆索</span><br>
+                            国籍：西班牙<br>
+                            车号：#14<br>
+                            生日：1981/07/29<br>
+                            领奖台次数：106
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Alpine车队</td>
+                        <td class="driver-list">
+                            <span class="driver-name">皮埃尔·加斯利</span><br>
+                            国籍：法国<br>
+                            车号：#10<br>
+                            生日：1996/02/07<br>
+                            领奖台次数：5<br><br>
+                            <span class="driver-name">杰克·杜汉</span><br>
+                            国籍：澳大利亚<br>
+                            车号：#7<br>
+                            生日：2003/01/20<br>
+                            领奖台次数：0
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>哈斯车队</td>
+                        <td class="driver-list">
+                            <span class="driver-name">埃斯特班·奥康</span><br>
+                            国籍：法国<br>
+                            车号：#31<br>
+                            生日：1996/09/17<br>
+                            领奖台次数：4<br><br>
+                            <span class="driver-name">奥利弗·贝尔曼</span><br>
+                            国籍：英国<br>
+                            车号：#87<br>
+                            生日：2005/05/08<br>
+                            领奖台次数：0
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>红牛二队</td>
+                        <td class="driver-list">
+                            <span class="driver-name">伊萨克·哈贾尔</span><br>
+                            国籍：法国<br>
+                            车号：#6<br>
+                            生日：2004/09/28<br>
+                            领奖台次数：0<br><br>
+                            <span class="driver-name">角田裕毅</span><br>
+                            国籍：日本<br>
+                            车号：#22<br>
+                            生日：2000/05/11<br>
+                            领奖台次数：0
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>威廉姆斯车队</td>
+                        <td class="driver-list">
+                            <span class="driver-name">亚历山大·阿尔本</span><br>
+                            国籍：泰国<br>
+                            车号：#23<br>
+                            生日：1996/03/23<br>
+                            领奖台次数：2<br><br>
+                            <span class="driver-name">卡洛斯·塞恩斯</span><br>
+                            国籍：西班牙<br>
+                            车号：#55<br>
+                            生日：1994/09/01<br>
+                            领奖台次数：27
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>Kick索伯车队</td>
+                        <td class="driver-list">
+                            <span class="driver-name">尼科·霍肯伯格</span><br>
+                            国籍：德国<br>
+                            车号：#27<br>
+                            生日：1987/08/19<br>
+                            领奖台次数：0<br><br>
+                            <span class="driver-name">加布里埃尔·博托莱托</span><br>
+                            国籍：巴西<br>
+                            车号：#5<br>
+                            生日：2004/10/14<br>
+                            领奖台次数：0
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p style="margin-top:24px;font-size:14px;color:#888;text-align:center;">数据整理自2025赛季F1官方及新闻资料</p>
+    </div>
+</body>
+</html> 
